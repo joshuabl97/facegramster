@@ -1,4 +1,5 @@
-{{ define "page" }}
+{{template "header" .}}
+
 <h1>FAQ Page</h1>
 <ul>
   {{range .}}
@@ -6,4 +7,4 @@
   {{end}}
 </ul>
 
-{{ end }}
+{{template "footer" .}}
