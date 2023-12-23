@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/joshuabl97/facegramster/ui"
 	"github.com/rs/zerolog"
 )
 
@@ -49,7 +50,7 @@ func main() {
 
 	r.Use(requestLogger(l))
 
-	r.Get("/", homeHandler)
+	r.Get("/", ui.Homepage)
 	r.Get("/contact", contactHandler)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
