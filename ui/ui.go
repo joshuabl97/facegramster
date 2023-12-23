@@ -20,7 +20,7 @@ func New(logger *zerolog.Logger) UI {
 func (ui *UI) execTemplate(w http.ResponseWriter, filepath string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	tpl, err := template.ParseFiles("../../ui/templates/home.html.tmpl")
+	tpl, err := template.ParseFiles(filepath)
 	if err != nil {
 		ui.lg.Error().Err(err)
 		http.Error(w, "could not parse html template", http.StatusInternalServerError)
