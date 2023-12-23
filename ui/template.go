@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"html/template"
+	"io/fs"
 	"net/http"
 )
 
@@ -24,6 +25,17 @@ func (ui *UI) Parse(filepath string) (Template, error) {
 		return Template{}, fmt.Errorf("parsing template: %w", err)
 	}
 
+	return Template{
+		htmlTmpl: tpl,
+		ui:       ui,
+	}, nil
+}
+
+func (ui *UI) ParseFS(fs fs.FS, pattern string) (Template, error) {
+	tpl, err := template.ParseFS(fs, pattern)
+	if err != nil {
+		return Template{}, fmt.Errorf("parsing template: %w", err)
+	}
 	return Template{
 		htmlTmpl: tpl,
 		ui:       ui,

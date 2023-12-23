@@ -13,6 +13,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/joshuabl97/facegramster/controllers"
 	"github.com/joshuabl97/facegramster/ui"
+	"github.com/joshuabl97/facegramster/ui/templates"
 	"github.com/rs/zerolog"
 )
 
@@ -55,12 +56,12 @@ func main() {
 	r.Use(requestLogger(l))
 
 	// Check that the template is parsable prior to handing it to the http.Handler
-	tpl := ui.Must(ui.Parse("../../ui/templates/home.html.tmpl"))
+	tpl := ui.Must(ui.ParseFS(templates.FS, "home.html.tmpl"))
 	r.Get("/", controllers.StaticHandler(tpl))
 
 	// Inline everything and skip the tpl variable declaration
 	r.Get("/contact", controllers.StaticHandler(
-		ui.Must(ui.Parse("../../ui/templates/contact.html.tmpl"))))
+		ui.Must(ui.ParseFS(templates.FS, "contact.html.tmpl"))))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
