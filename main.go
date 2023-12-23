@@ -49,7 +49,12 @@ func main() {
 
 	r.Use(requestLogger(l))
 
-	r.Get("/", handlerFunc)
+	r.Get("/", homeHandler)
+	r.Get("/contact", contactHandler)
+
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Page not found", http.StatusNotFound)
+	})
 
 	// Creates a new http server
 	s := http.Server{
@@ -112,6 +117,12 @@ func requestLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 	}
 }
 
-func handlerFunc(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "<h1>Welcome to my site bruh</h1>")
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, "<h1>Welcome to my site</h1>")
+}
+
+func contactHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, "<h1>Contact Page</h1><p>Feel free to contact me at <a href=\"mailto:blau.joshua@gmail.com\">blau.joshua@gmail.com</a>")
 }
