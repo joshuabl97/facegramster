@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/joshuabl97/facegramster/controllers"
 	"github.com/joshuabl97/facegramster/ui"
 	"github.com/rs/zerolog"
 )
@@ -53,8 +54,17 @@ func main() {
 
 	r.Use(requestLogger(l))
 
-	r.Get("/", ui.Homepage)
-	r.Get("/contact", ui.ContactPage)
+	tpl, err := ui.Parse("../../ui/templates/home.html.tmpl")
+	if err != nil {
+		l.Fatal().Err(err)
+	}
+	r.Get("/", controllers.StaticHandler(tpl))
+
+	tpl, err = ui.Parse("../../ui/templates/contact.html.tmpl")
+	if err != nil {
+		l.Fatal().Err(err)
+	}
+	r.Get("/contact", controllers.StaticHandler(tpl))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
