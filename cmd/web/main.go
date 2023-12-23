@@ -56,13 +56,13 @@ func main() {
 
 	tpl, err := ui.Parse("../../ui/templates/home.html.tmpl")
 	if err != nil {
-		l.Fatal().Err(err)
+		l.Fatal().Err(err).Msg("Failed to parse template")
 	}
 	r.Get("/", controllers.StaticHandler(tpl))
 
 	tpl, err = ui.Parse("../../ui/templates/contact.html.tmpl")
 	if err != nil {
-		l.Fatal().Err(err)
+		l.Fatal().Err(err).Msg("Failed to parse template")
 	}
 	r.Get("/contact", controllers.StaticHandler(tpl))
 
