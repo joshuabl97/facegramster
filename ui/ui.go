@@ -17,7 +17,7 @@ func New(logger *zerolog.Logger) UI {
 	}
 }
 
-func (ui *UI) Homepage(w http.ResponseWriter, r *http.Request) {
+func (ui *UI) execTemplate(w http.ResponseWriter, filepath string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	tpl, err := template.ParseFiles("../../ui/templates/home.html.tmpl")
@@ -33,18 +33,10 @@ func (ui *UI) Homepage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (ui *UI) Homepage(w http.ResponseWriter, r *http.Request) {
+	ui.execTemplate(w, "../../ui/templates/home.html.tmpl")
+}
+
 func (ui *UI) ContactPage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	tpl, err := template.ParseFiles("../../ui/templates/contact.html.tmpl")
-	if err != nil {
-		ui.lg.Error().Err(err)
-		http.Error(w, "could not parse html template", 500)
-	}
-
-	err = tpl.Execute(w, nil)
-	if err != nil {
-		ui.lg.Error().Err(err)
-		http.Error(w, "failed to render template", 500)
-	}
+	ui.execTemplate(w, "../../ui/templates/contact.html.tmpl")
 }
