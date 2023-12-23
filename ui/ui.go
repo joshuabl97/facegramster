@@ -23,13 +23,13 @@ func (ui *UI) Homepage(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("../../ui/templates/home.html.tmpl")
 	if err != nil {
 		ui.lg.Error().Err(err)
-		http.Error(w, "could not parse html template", 500)
+		http.Error(w, "could not parse html template", http.StatusInternalServerError)
 	}
 
 	err = tpl.Execute(w, nil)
 	if err != nil {
 		ui.lg.Error().Err(err)
-		http.Error(w, "failed to render template", 500)
+		http.Error(w, "failed to render template", http.StatusInternalServerError)
 	}
 }
 
