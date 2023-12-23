@@ -7,7 +7,7 @@ import (
 )
 
 type Template struct {
-	htnlTmpl *template.Template
+	htmlTmpl *template.Template
 	ui       *UI
 }
 
@@ -18,14 +18,14 @@ func (ui *UI) Parse(filepath string) (Template, error) {
 	}
 
 	return Template{
-		htnlTmpl: tpl,
+		htmlTmpl: tpl,
 		ui:       ui,
 	}, nil
 }
 
 func (t *Template) Exec(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	err := t.htnlTmpl.Execute(w, data)
+	err := t.htmlTmpl.Execute(w, data)
 	if err != nil {
 		t.ui.lg.Error().Err(err)
 		http.Error(w, "failed to render template", http.StatusInternalServerError)
