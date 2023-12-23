@@ -11,6 +11,13 @@ type Template struct {
 	ui       *UI
 }
 
+func (ui *UI) Must(tpl Template, err error) Template {
+	if err != nil {
+		ui.lg.Fatal().Err(err).Msg("Failed to parse template")
+	}
+	return tpl
+}
+
 func (ui *UI) Parse(filepath string) (Template, error) {
 	tpl, err := template.ParseFiles(filepath)
 	if err != nil {

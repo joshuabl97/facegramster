@@ -54,16 +54,10 @@ func main() {
 
 	r.Use(requestLogger(l))
 
-	tpl, err := ui.Parse("../../ui/templates/home.html.tmpl")
-	if err != nil {
-		l.Fatal().Err(err).Msg("Failed to parse template")
-	}
+	tpl := ui.Must(ui.Parse("../../ui/templates/home.html.tmpl"))
 	r.Get("/", controllers.StaticHandler(tpl))
 
-	tpl, err = ui.Parse("../../ui/templates/contact.html.tmpl")
-	if err != nil {
-		l.Fatal().Err(err).Msg("Failed to parse template")
-	}
+	tpl = ui.Must(ui.Parse("../../ui/templates/contact.html.tmpl"))
 	r.Get("/contact", controllers.StaticHandler(tpl))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
