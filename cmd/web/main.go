@@ -57,15 +57,15 @@ func main() {
 
 	r.Get("/", controllers.StaticHandler(
 		ui.Must(ui.ParseFS(templates.FS,
-			"home.html.tmpl", "tailwind.html.tmpl"))))
+			"home.html.tmpl", "default-wrapper.html.tmpl"))))
 
 	r.Get("/contact", controllers.StaticHandler(
 		ui.Must(ui.ParseFS(templates.FS,
-			"contact.html.tmpl", "tailwind.html.tmpl"))))
+			"contact.html.tmpl", "default-wrapper.html.tmpl"))))
 
 	r.Get("/faq", controllers.FAQ(
 		ui.Must(ui.ParseFS(templates.FS,
-			"faq.html.tmpl", "tailwind.html.tmpl"))))
+			"faq.html.tmpl", "default-wrapper.html.tmpl"))))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
