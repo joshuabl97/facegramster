@@ -46,12 +46,15 @@ func main() {
 	}
 	l.Debug().Msg("This message appears only when log level set to Debug")
 
+	// Creates a new UI
+	ui := ui.New(&l)
+
 	r := chi.NewRouter()
 
 	r.Use(requestLogger(l))
 
 	r.Get("/", ui.Homepage)
-	r.Get("/contact", contactHandler)
+	r.Get("/contact", ui.ContactPage)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
@@ -116,14 +119,4 @@ func requestLogger(logger zerolog.Logger) func(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
-}
-
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Welcome to my site</h1>")
-}
-
-func contactHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Contact Page</h1><p>Feel free to contact me at <a href=\"mailto:blau.joshua@gmail.com\">blau.joshua@gmail.com</a>")
 }
