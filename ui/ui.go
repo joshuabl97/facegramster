@@ -2,7 +2,6 @@ package ui
 
 import (
 	"net/http"
-	"text/template"
 
 	"github.com/rs/zerolog"
 )
@@ -18,19 +17,14 @@ func New(logger *zerolog.Logger) UI {
 }
 
 func (ui *UI) execTemplate(w http.ResponseWriter, filepath string) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	tpl, err := template.ParseFiles(filepath)
+	tpl, err := ui.Parse(filepath)
 	if err != nil {
 		ui.lg.Error().Err(err)
-		http.Error(w, "could not parse html template", http.StatusInternalServerError)
+		http.Error(w, "There was an error parsing the template.", http.StatusInternalServerError)
+		return
 	}
 
-	err = tpl.Execute(w, nil)
-	if err != nil {
-		ui.lg.Error().Err(err)
-		http.Error(w, "failed to render template", http.StatusInternalServerError)
-	}
+	tpl.Exec(w, nil)
 }
 
 func (ui *UI) Homepage(w http.ResponseWriter, r *http.Request) {
