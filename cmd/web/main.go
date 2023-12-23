@@ -54,11 +54,13 @@ func main() {
 
 	r.Use(requestLogger(l))
 
+	// Check that the template is parsable prior to handing it to the http.Handler
 	tpl := ui.Must(ui.Parse("../../ui/templates/home.html.tmpl"))
 	r.Get("/", controllers.StaticHandler(tpl))
 
-	tpl = ui.Must(ui.Parse("../../ui/templates/contact.html.tmpl"))
-	r.Get("/contact", controllers.StaticHandler(tpl))
+	// Inline everything and skip the tpl variable declaration
+	r.Get("/contact", controllers.StaticHandler(
+		ui.Must(ui.Parse("../../ui/templates/contact.html.tmpl"))))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
