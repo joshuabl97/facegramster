@@ -67,6 +67,10 @@ func main() {
 		ui.Must(ui.ParseFS(templates.FS,
 			"faq.html.tmpl", "default-wrapper.html.tmpl"))))
 
+	r.Get("/signup", controllers.FAQ(
+		ui.Must(ui.ParseFS(templates.FS,
+			"signup.html.tmpl", "default-wrapper.html.tmpl"))))
+
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
