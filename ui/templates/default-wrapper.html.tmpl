@@ -8,14 +8,39 @@
   rel="stylesheet">
 </head>
 <body>
-{{end}}
+  <header class="bg-gradient-to-r from-indigo-700 to-purple-800 text-white">
+    <nav class="px-8 py-6 flex items-center space-x-12">
+      <div class="text-4xl font-serif">Facegramster</div>
+      <div class="flex-grow">
+        <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/">
+          Home
+        </a>
+        <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/contact">
+          Contact
+        </a>
+        <a class="text-lg font-semibold hover:text-blue-100 pr-8" href="/faq">
+          FAQ
+        </a>
+      </div>
+      <div class="space-x-4">
+        <a href="#">Sign in</a>
+        <a href="#" class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded">
+          Sign up
+        </a>
+      </div>
+    </nav>
+  </header>
+  <div class="pb-4 pt-4">
+{{ end }}
 
-<!-- Each page's content goes here. -->
+
 
 {{define "footer"}}
+</div>
+<footer class="bg-gradient-to-r from-indigo-700 to-purple-800 text-white">
+  <p class="text-xs">&copy; Joshua Blau 2028</p>
+  </footer>
+
 </body>
-<footer>
-    <br><p>Copyright Joshua Blau 2028</p>
-</footer>
 </html>
 {{end}}
