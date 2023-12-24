@@ -55,21 +55,22 @@ func main() {
 
 	r.Use(requestLogger(l))
 
-	r.Get("/", controllers.StaticHandler(
-		ui.Must(ui.ParseFS(templates.FS,
-			"home.html.tmpl", "default-wrapper.html.tmpl"))))
+	homeTmpl := ui.Must(ui.ParseFS(templates.FS, "home.html.tmpl", "default-wrapper.html.tmpl"))
+	r.Get("/", controllers.StaticHandler(&homeTmpl))
 
-	r.Get("/contact", controllers.StaticHandler(
-		ui.Must(ui.ParseFS(templates.FS,
-			"contact.html.tmpl", "default-wrapper.html.tmpl"))))
+	contactTmpl := ui.Must(ui.ParseFS(templates.FS, "contact.html.tmpl", "default-wrapper.html.tmpl"))
+	r.Get("/contact", controllers.StaticHandler(&contactTmpl))
 
-	r.Get("/faq", controllers.FAQ(
-		ui.Must(ui.ParseFS(templates.FS,
-			"faq.html.tmpl", "default-wrapper.html.tmpl"))))
+	faqTmpl := ui.Must(ui.ParseFS(templates.FS, "faq.html.tmpl", "default-wrapper.html.tmpl"))
+	r.Get("/faq", controllers.FAQ(&faqTmpl))
 
-	r.Get("/signup", controllers.FAQ(
-		ui.Must(ui.ParseFS(templates.FS,
-			"signup.html.tmpl", "default-wrapper.html.tmpl"))))
+	usersC := controllers.Users{}
+	signupTmpl := ui.Must(ui.ParseFS(
+		templates.FS,
+		"signup.html.tmpl", "default-wrapper.html.tmpl",
+	))
+	usersC.Templates.New = &signupTmpl
+	r.Get("/signup", usersC.New)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
