@@ -64,13 +64,14 @@ func main() {
 	faqTmpl := ui.Must(ui.ParseFS(templates.FS, "faq.html.tmpl", "default-wrapper.html.tmpl"))
 	r.Get("/faq", controllers.FAQ(&faqTmpl))
 
-	usersC := controllers.Users{}
+	usersC := controllers.Users{Log: &l}
 	signupTmpl := ui.Must(ui.ParseFS(
 		templates.FS,
 		"signup.html.tmpl", "default-wrapper.html.tmpl",
 	))
 	usersC.Templates.New = &signupTmpl
 	r.Get("/signup", usersC.New)
+	r.Post("/users", usersC.Create)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
