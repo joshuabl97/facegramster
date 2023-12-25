@@ -55,18 +55,17 @@ func main() {
 
 	r.Use(requestLogger(l))
 
-	homeTmpl := ui.Must(ui.ParseFS(templates.FS, "home.html.tmpl", "default-wrapper.html.tmpl"))
-	r.Get("/", controllers.StaticHandler(&homeTmpl))
+	r.Get("/", controllers.StaticHandler(ui.Must(ui.ParseFS(templates.FS,
+		"home.html.tmpl", "default-wrapper.html.tmpl"))))
 
-	contactTmpl := ui.Must(ui.ParseFS(templates.FS, "contact.html.tmpl", "default-wrapper.html.tmpl"))
-	r.Get("/contact", controllers.StaticHandler(&contactTmpl))
+	r.Get("/contact", controllers.StaticHandler(ui.Must(ui.ParseFS(templates.FS,
+		"contact.html.tmpl", "default-wrapper.html.tmpl"))))
 
-	faqTmpl := ui.Must(ui.ParseFS(templates.FS, "faq.html.tmpl", "default-wrapper.html.tmpl"))
-	r.Get("/faq", controllers.FAQ(&faqTmpl))
+	r.Get("/faq", controllers.FAQ(ui.Must(ui.ParseFS(templates.FS,
+		"faq.html.tmpl", "default-wrapper.html.tmpl"))))
 
 	usersC := controllers.Users{Log: &l}
-	signupTmpl := ui.Must(ui.ParseFS(templates.FS, "signup.html.tmpl", "default-wrapper.html.tmpl"))
-	usersC.Templates.New = &signupTmpl
+	usersC.Templates.New = ui.Must(ui.ParseFS(templates.FS, "signup.html.tmpl", "default-wrapper.html.tmpl"))
 	r.Get("/signup", usersC.New)
 	r.Post("/users", usersC.Create)
 
