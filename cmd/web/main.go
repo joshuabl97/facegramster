@@ -65,10 +65,7 @@ func main() {
 	r.Get("/faq", controllers.FAQ(&faqTmpl))
 
 	usersC := controllers.Users{Log: &l}
-	signupTmpl := ui.Must(ui.ParseFS(
-		templates.FS,
-		"signup.html.tmpl", "default-wrapper.html.tmpl",
-	))
+	signupTmpl := ui.Must(ui.ParseFS(templates.FS, "signup.html.tmpl", "default-wrapper.html.tmpl"))
 	usersC.Templates.New = &signupTmpl
 	r.Get("/signup", usersC.New)
 	r.Post("/users", usersC.Create)
