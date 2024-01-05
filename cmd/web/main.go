@@ -11,10 +11,12 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/rs/zerolog"
+
 	"github.com/joshuabl97/facegramster/controllers"
 	"github.com/joshuabl97/facegramster/ui"
 	"github.com/joshuabl97/facegramster/ui/templates"
-	"github.com/rs/zerolog"
 )
 
 func main() {
