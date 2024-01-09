@@ -25,6 +25,31 @@ type NewUser struct {
 	Password string
 }
 
+func (u *UserService) Authenticate(nu *NewUser) (*User, error) {
+	email := strings.ToLower(nu.Email)
+	user := User{
+		Email: email,
+	}
+
+	row := u.DB.QueryRow(`
+		SELECT id, password_hash
+		FROM users WHERE email=$1`, email)
+	err := row.Scan(&user.ID, &user.PasswordHash)
+	if err != nil {
+		u.Lg.Error().Err(err).Msg("Could not authenticate user")
+		return nil, fmt.Errorf("Authenticate: %w", err)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(nu.Password))
+	if err != nil {
+		u.Lg.Error().Err(err).Msg("password did not match")
+		return nil, fmt.Errorf("password did not match: %w", err)
+	}
+	u.Lg.Info().Msg("User password matched")
+
+	return &user, nil
+}
+
 func (u *UserService) Create(nu *NewUser) (*User, error) {
 	email := strings.ToLower(nu.Email)
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(nu.Password), bcrypt.DefaultCost)

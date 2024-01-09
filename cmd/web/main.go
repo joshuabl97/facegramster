@@ -76,7 +76,11 @@ func main() {
 		},
 	}
 	usersC.Templates.New = ui.Must(ui.ParseFS(templates.FS, "signup.html.tmpl", "default-wrapper.html.tmpl"))
+	usersC.Templates.SignIn = ui.Must(ui.ParseFS(templates.FS, "signin.html.tmpl", "default-wrapper.html.tmpl"))
+
 	r.Get("/signup", usersC.New)
+	r.Get("/signin", usersC.SignIn)
+	r.Post("/signin", usersC.ProcessSignIn)
 	r.Post("/users", usersC.Create)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
