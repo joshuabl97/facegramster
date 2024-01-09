@@ -15,12 +15,12 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/joshuabl97/facegramster/controllers"
+	"github.com/joshuabl97/facegramster/models"
 	"github.com/joshuabl97/facegramster/ui"
 	"github.com/joshuabl97/facegramster/ui/templates"
 )
 
 func main() {
-	// Flags
 	debug := flag.Bool("debug", false, "sets log level to debug")
 	timeZone := flag.String("timezone", "Etc/Greenwich", "An official TZ identifier")
 	portNum := flag.String("port_number", "3000", "The port number the server runs on")
@@ -37,20 +37,23 @@ func main() {
 		time.Local = loc
 	}
 
-	// Creates a custom logger that wraps the zerolog.Logger we instantiated/customized above
-	errorLog := &zerologLogger{l}
-
 	// Make the logs look pretty
 	l = l.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	// Default level for this example is info, unless debug flag is present
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	if *debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 	l.Debug().Msg("This message appears only when log level set to Debug")
 
-	// Creates a new UI
+	// open the db
+	cfg := models.DefaultPostgresConfig()
+	db, err := models.Open(&l, cfg)
+	if err != nil {
+		l.Fatal().Err(err).Msg("failed to open db...")
+	}
+	defer db.Close()
+
 	ui := ui.New(&l)
 
 	r := chi.NewRouter()
@@ -66,16 +69,23 @@ func main() {
 	r.Get("/faq", controllers.FAQ(ui.Must(ui.ParseFS(templates.FS,
 		"faq.html.tmpl", "default-wrapper.html.tmpl"))))
 
-	usersC := controllers.Users{Log: &l}
+	usersC := controllers.Users{
+		UserService: &models.UserService{
+			DB: db,
+			Lg: &l,
+		},
+	}
 	usersC.Templates.New = ui.Must(ui.ParseFS(templates.FS, "signup.html.tmpl", "default-wrapper.html.tmpl"))
 	r.Get("/signup", usersC.New)
 	r.Post("/users", usersC.Create)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
+		// TODO: find a 404 template that looks swagalicious to embed
 	})
 
 	// Creates a new http server
+	errorLog := &zerologLogger{l}
 	s := http.Server{
 		Addr:         ":" + *portNum,           // configure the bind address
 		Handler:      r,                        // set the default handler
@@ -115,12 +125,11 @@ func main() {
 	}
 }
 
-// custom logger type that wraps zerolog.Logger
 type zerologLogger struct {
 	logger zerolog.Logger
 }
 
-// implement the io.Writer interface for our custom logger.
+// implement the io.Writer interface using my fancy custom logger for the server error log
 func (l *zerologLogger) Write(p []byte) (n int, err error) {
 	l.logger.Error().Msg(string(p))
 	return len(p), nil
