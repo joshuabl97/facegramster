@@ -35,7 +35,7 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error creating user", http.StatusInternalServerError)
 	}
 
-	fmt.Fprintf(w, "User created &+v", user)
+	fmt.Fprintf(w, "User created %+v", user)
 }
 
 func (u Users) SignIn(w http.ResponseWriter, r *http.Request) {
