@@ -58,6 +58,4 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 
 	u.UserService.Lg.Info().Msg(fmt.Sprintf("User authenticated: %+v\n", user))
 	fmt.Fprintf(w, "User authenticated: %+v\n", user)
-
-	u.Templates.SignIn.Exec(w, data)
 }
